@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tables Page</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="jumbotron text-center">
+            <h1>Hot Restaurant</h1>
+            <hr>
+            <h2>Current Reservations and Wait List</h2>
+            <a href="/reserve"><button class="btn btn-danger">Make Reservation</button></a>
+            <a href="/"><button class="btn btn-secondary">Home</button></a>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h3>Current Reservation</h3>
+            </div>
+            <div class="card-body" id="tableList">
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <div class="card-header">
+                <h3>Wait List</h3>
+            </div>
+            <div class="card-body" id="waitList">
+            </div>
+        </div>
+        <footer class="footer">
+            <p>
+                <a href="/api/tableList">API Table List</a>
+                |
+                <a href="/api/waitList">API Wait List</a>
+                |
+                <a href="" id="clearBtn">Clear Tables</a>
+            </p>
+        </footer>
+    </div>
+    <script type="text/javascript">
+        const getReservations = () => {
+            $.get("/api/tableList", (tableData) => {
+                tableData.forEach((el, i) => {
+                    let table = $("<div class='card'>")
+                    table.append(
+                        $("<div class='card-header'>").text(`Table #${i+1}`),
+                        $("<p>").text(`Name: ${el.name}`),
+                        $("<p>").text(`Phone Number: ${el.phone}`),
+                        $("<p>").text(`Email: ${el.email}`),
+                        $("<p>").text(`ID: ${el.id}`)
+                    )
+                    $("#tableList").append(table, $("<br>"))
+                })
+            })
+        }
+        const getWaitlist = () => {
+            $.get("/api/waitlist", (waitData) => {
+                waitData.forEach((el, i) => {
+                    let table = $("<div class='card'>")
+                    table.append(
+                        $("<div class='card-header'>").text(`Table #${i+1}`),
+                        $("<p>").text(`Name: ${el.name}`),
+                        $("<p>").text(`Phone Number: ${el.phone}`),
+                        $("<p>").text(`Email: ${el.email}`),
+                        $("<p>").text(`ID: ${el.id}`)
+                    )
+                    $("#waitList").append(table, $("<br>"))
+                })
+            })
+        }
+        getReservations();
+        getWaitlist();
+        $("#clearBtn").on('click', () => {
+            $.post("/api/clear")
+            .then(() => {
+                alert("Clearing Tables")
+                $("#tableList").empty();
+                $("#waitList").empty();
+            })
+        })
+    </script>
+</body>
+</html>
