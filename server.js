@@ -9,6 +9,7 @@ var app = express();
 var PORT = 3000;
 
 // Sets up the Express app to handle data parsing
+// Need this to get req.body in the app.post
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
